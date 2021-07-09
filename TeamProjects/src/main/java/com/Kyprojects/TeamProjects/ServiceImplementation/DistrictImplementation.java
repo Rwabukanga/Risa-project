@@ -16,11 +16,7 @@ public class DistrictImplementation implements DistrictService{
 	@Autowired
 	private DistrictRepository districtrepo;
 
-	public void createdistrict(District district) {
-		// TODO Auto-generated method stub
-		districtrepo.save(district);
-	}
-
+	
 	public List<District> findAll(Class c) {
 		// TODO Auto-generated method stub
 		return districtrepo.findAll();
@@ -34,6 +30,11 @@ public class DistrictImplementation implements DistrictService{
 	public List<District> findByProvinceId(int id) {
 		// TODO Auto-generated method stub
 		return districtrepo.findByProvinceId(id);
+	}
+
+	public void createdistrict(District district) {
+		// TODO Auto-generated method stub
+		districtrepo.save(district);
 	}
 	
 	

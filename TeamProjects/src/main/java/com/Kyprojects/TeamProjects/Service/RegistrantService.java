@@ -27,4 +27,6 @@ public interface RegistrantService {
 	/*public List<Registrant> findByCategory(String category);*/
 	
 	public List<Registrant> findByCategory(String category);
+	public void sendSimpleMessage(String to, String subject, String text);
+	public Optional<Registrant> findByEmail(String emailAddress);
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,17 +30,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.Kyprojects.TeamProjects.Domain.Deliverables;
 import com.Kyprojects.TeamProjects.Domain.Institution;
 import com.Kyprojects.TeamProjects.Domain.Registrant;
 import com.Kyprojects.TeamProjects.Domain.Request;
 import com.Kyprojects.TeamProjects.Domain.RequestStatus;
+import com.Kyprojects.TeamProjects.Domain.Requeststatuss;
 import com.Kyprojects.TeamProjects.Domain.Requestexpertis;
+import com.Kyprojects.TeamProjects.Service.DeliverableService;
 import com.Kyprojects.TeamProjects.Service.InstitutionService;
 import com.Kyprojects.TeamProjects.Service.RegistrantService;
 import com.Kyprojects.TeamProjects.Service.RequestExpertiseService;
 import com.Kyprojects.TeamProjects.Service.RequestService;
+import com.Kyprojects.TeamProjects.Service.RequestStatusService;
 import com.Kyprojects.TeamProjects.Utility.Msg;
 import com.Kyprojects.TeamProjects.Utility.ResponseBean;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+
 
 @Controller
 @CrossOrigin
@@ -57,31 +65,107 @@ public class RequestController {
 	
 	@Autowired
 	private RequestExpertiseService expservice;
+	
+	@Autowired
+	private RequestStatusService statservice;
+	
+	@Autowired
+	private DeliverableService delservice;
 	 
 	  @CrossOrigin
-      @RequestMapping(value="/saverequest/{id}", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)	
-	  public ResponseEntity<Object> createrequest(HttpServletRequest request,@RequestBody innerRequest rq,@PathVariable int id) {
+      @RequestMapping(value="/saverequest", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)	
+	  public ResponseEntity<Object> createrequest(HttpServletRequest request,@RequestBody innerRequest rq) {
 			ResponseBean rb = new ResponseBean();
 			
 			try {
-			  Optional<Registrant> rg= rgservice.findByid(id);
-			  Registrant rgg = rg.get();
+			 /* Optional<Registrant> rg= rgservice.findByid(id);
+			  Registrant rgg = rg.get();*/
 			  Request r = new Request();
+			  
 			  
 			/*  r.setRequestdate(rq.getRequestdate());*/
 			 /* r.setRequestexp(RequestExpertise.Pending);*/
-			  r.setRequeststatus(RequestStatus.New);
+			  Optional<Requeststatuss> st = statservice.findById(rq.getReqst());
+			  Requeststatuss status = st.get();
+			  
+			  Optional<Deliverables> del = delservice.findById(rq.getDel());
+			  Deliverables deliv = del.get();
+			  
+			  Optional<Requestexpertis> exp = expservice.findById(rq.getReqexp());
+			  Requestexpertis expp = exp.get();
+			  
+			  Optional<Institution> inst = instservice.findById(rq.getInstitution());
+			  Institution ins = inst.get();
+			  
 			  r.setComment(rq.getComment());
-			  r.setDeliverables(rq.getDeliverables());
+			 /* r.setDeliverables(rq.getDeliverables());*/
 			  r.setProjectdecription(rq.getProjectdecription());
-			  r.setProjtitle(rq.getProjectTitle());
-			  r.setProposdeltimeline(rq.getProposedDeliveryTimeline());
+			  r.setProjtitle(rq.getProjtitle());
+			  r.setProposdeltimeline(rq.getProposdeltimeline());
 			  r.setProposedfinancialbudget(rq.getProposedfinancialbudget());
-			  r.setPropostechnologies(rq.getProposedTechnologies());
-			/*  r.setRegistrant(rgg);*/
+			  r.setPropostechnologies(rq.getPropostechnologies());
+			  r.setRequestdate(rq.getRequestdate());
+			  r.setDel(deliv);
+			  r.setReqst(status);
+			  r.setReqexp(expp);
+			  r.setInstitution(ins);
+			  /*r.setRegistrant(rgg);*/
 			  rservice.createrequest(r);
 	          rb.setCode(Msg.SUCCESS_CODE);
 	          rb.setDescription(Msg.save);
+              rb.setObject(r);				
+	} catch (Exception e) {
+		    e.printStackTrace();
+		    System.out.println(e.getMessage()+"=============================");
+			rb.setCode(Msg.ERROR_CODE);
+			rb.setDescription("failed to create registrar");
+				
+			}
+
+			return new ResponseEntity<Object>(rb, HttpStatus.OK);
+		}
+	  
+	  @CrossOrigin
+      @RequestMapping(value="/updaterequest/{id}", method=RequestMethod.PUT, consumes= MediaType.APPLICATION_JSON_VALUE)	
+	  public ResponseEntity<Object> updaterequest(HttpServletRequest request,@RequestBody innerRequest rq, @PathVariable int id) {
+			ResponseBean rb = new ResponseBean();
+			
+			try {
+			 /* Optional<Registrant> rg= rgservice.findByid(id);
+			  Registrant rgg = rg.get();*/
+			  Optional<Request> rr = rservice.findById(id);
+			  Request r = rr.get();
+			  
+			  
+			/*  r.setRequestdate(rq.getRequestdate());*/
+			 /* r.setRequestexp(RequestExpertise.Pending);*/
+			  Optional<Requeststatuss> st = statservice.findById(rq.getReqst());
+			  Requeststatuss status = st.get();
+			  
+			  Optional<Deliverables> del = delservice.findById(rq.getDel());
+			  Deliverables deliv = del.get();
+			  
+			  Optional<Requestexpertis> exp = expservice.findById(rq.getReqexp());
+			  Requestexpertis expp = exp.get();
+			  
+			  Optional<Institution> inst = instservice.findById(rq.getInstitution());
+			  Institution ins = inst.get();
+			  
+			  r.setComment(rq.getComment());
+			 /* r.setDeliverables(rq.getDeliverables());*/
+			  r.setProjectdecription(rq.getProjectdecription());
+			  r.setProjtitle(rq.getProjtitle());
+			  r.setProposdeltimeline(rq.getProposdeltimeline());
+			  r.setProposedfinancialbudget(rq.getProposedfinancialbudget());
+			  r.setPropostechnologies(rq.getPropostechnologies());
+			  r.setRequestdate(rq.getRequestdate());
+			  r.setDel(deliv);
+			  r.setReqst(status);
+			  r.setReqexp(expp);
+			  r.setInstitution(ins);
+			  rservice.updaterequest(r);
+	          rb.setCode(Msg.SUCCESS_CODE);
+	          rb.setDescription(Msg.update);
               rb.setObject(r);				
 	} catch (Exception e) {
 		    e.printStackTrace();
@@ -129,11 +213,11 @@ public class RequestController {
 				req.setProposdeltimeline(params.get("proposeddeliverytimeline"));
 				req.setProposedfinancialbudget(params.get("proposedfinancialbudget"));
 				req.setPropostechnologies(params.get("proposedtechnologies"));
-				req.setDeliverables(params.get("deliverables"));
+				/*req.setDeliverables(params.get("deliverables"));*/
 				req.setComment(params.get("comment"));
 				/*req.setRequestexp(RequestExpertise.Pending);*/
-				req.setRequeststatus(RequestStatus.New);
-				req.setRequestdate(params.get("requestdate"));
+				/*req.setRequeststatus(RequestStatus.New);*/
+				/*req.setRequestdate(params.get("requestdate"));*/
 				/*req.setRegistrant(registrar);*/
 				/*req.setNeedassessmentreport(params.get("needassessmentreport"));
 				req.setFinancialproposal(params.get("financialproposal"));*/
@@ -160,13 +244,13 @@ public class RequestController {
 				byte[] bytes= file.getBytes();
 				Path path = Paths.get(ff.getPath() + "/" + fileName);
 				Files.write(path, bytes);
-				req.setFile(path.toString());
+				/*req.setFile(path.toString());
 				req.setNeedassessmentreport(path.toString());
 				req.setFinancialproposal(path.toString());
 				req.setTechnicalproposal(path.toString());
 				req.setPurchaseorder(path.toString());
 				req.setInvoice(path.toString());
-				req.setTermsofreference(path.toString());
+				req.setTermsofreference(path.toString());*/
 				
 				rservice.updaterequest(req);
 				
@@ -208,7 +292,7 @@ public class RequestController {
 				/*branch.setDistrict(brn.getDistrict());
 				branch.setProvince(brn.getProvince());*/
 				rqt.setComment(rq.getComment());
-				rqt.setDeliverables(rq.getDeliverables());
+				/*rqt.setDeliverables(rq.getDeliverables());*/
 				rqt.setProjectdecription(rq.getProjectdecription());
 				/*rqt.setProjectTitle(rq.getProjectTitle());
 				rqt.setProposedDeliveryTimeline(rq.getProposedDeliveryTimeline());
@@ -260,7 +344,7 @@ public class RequestController {
 			try {			
 						List<Request> list = rservice.findAll();
 						rb.setCode(Msg.SUCCESS_CODE);
-						rb.setDescription("branchuser retrieved");
+						rb.setDescription("Request retrieved");
 						rb.setObject(list);
 
 
@@ -308,7 +392,7 @@ public class RequestController {
 	    		Optional<Request> bb = rservice.findById(id);
 	    		Request rr = bb.get();
 	    		
-	    		rr.setRequeststatus(RequestStatus.Approved);
+	    		/*rr.setRequeststatus(RequestStatus.Approved);*/
 	    		/*rr.setRequestexp(RequestExpertise.Development);*/
 	    		rservice.updaterequest(rr);
 	    		
@@ -333,7 +417,7 @@ public class RequestController {
 	    		Optional<Request> bb = rservice.findById(id);
 	    		Request rr = bb.get();
 	    		
-	    		rr.setRequeststatus(RequestStatus.Rejected);
+	    		/*rr.setRequeststatus(RequestStatus.Rejected);*/
 	    	/*	rr.setRequestexp(RequestExpertise.Cancelled);*/
 	    		rservice.updaterequest(rr);
 	    		
@@ -424,32 +508,29 @@ public class RequestController {
 		
 	    public static class innerRequest{
 	    	
-	    	/*@JsonFormat(pattern="yyyy-MM-dd")
-	    	private Date requestdate;*/
-	    	private String ProjectTitle;
+	    	@JsonFormat(pattern="yyyy-MM-dd")
+	    	private Date requestdate;
+	    	private String Projtitle;
 	    	private String Projectdecription;
-	    	private String ProposedTechnologies;
-	    	private String ProposedDeliveryTimeline;
+	    	private String Propostechnologies;
+	    	private String Proposdeltimeline;
 	    	private String Proposedfinancialbudget;
-	    	private String Deliverables;
+	    	/*private String Deliverables;*/
 	    	private String Comment;
-	    	private String needassessmentreport;
-	    	private String financialproposal;
-	    	
+	    	/*private String needassessmentreport;
+	    	private String financialproposal;*/
+	    	private int reqst;
+	    	private int del;
+	    	private int reqexp;
+	    	private int institution;
 	    	/*@Enumerated(EnumType.STRING)
 	    	private RequestExpertise requestexp;
 	    	*/
-	    	@Enumerated(EnumType.STRING)
+	    	/*@Enumerated(EnumType.STRING)
 	    	private RequestStatus requeststatus;
-	    	
+	    	*/
 
-			public String getProjectTitle() {
-				return ProjectTitle;
-			}
-
-			public void setProjectTitle(String projectTitle) {
-				ProjectTitle = projectTitle;
-			}
+		
 
 			public String getProjectdecription() {
 				return Projectdecription;
@@ -458,23 +539,7 @@ public class RequestController {
 			public void setProjectdecription(String projectdecription) {
 				Projectdecription = projectdecription;
 			}
-
-			public String getProposedTechnologies() {
-				return ProposedTechnologies;
-			}
-
-			public void setProposedTechnologies(String proposedTechnologies) {
-				ProposedTechnologies = proposedTechnologies;
-			}
-
-			public String getProposedDeliveryTimeline() {
-				return ProposedDeliveryTimeline;
-			}
-
-			public void setProposedDeliveryTimeline(String proposedDeliveryTimeline) {
-				ProposedDeliveryTimeline = proposedDeliveryTimeline;
-			}
-
+		
 			public String getProposedfinancialbudget() {
 				return Proposedfinancialbudget;
 			}
@@ -482,15 +547,6 @@ public class RequestController {
 			public void setProposedfinancialbudget(String proposedfinancialbudget) {
 				Proposedfinancialbudget = proposedfinancialbudget;
 			}
-
-			public String getDeliverables() {
-				return Deliverables;
-			}
-
-			public void setDeliverables(String deliverables) {
-				Deliverables = deliverables;
-			}
-
 			public String getComment() {
 				return Comment;
 			}
@@ -499,17 +555,81 @@ public class RequestController {
 				Comment = comment;
 			}
 
+			public int getReqst() {
+				return reqst;
+			}
+
+			public void setReqst(int reqst) {
+				this.reqst = reqst;
+			}
+
+			public int getDel() {
+				return del;
+			}
+
+			public void setDel(int del) {
+				this.del = del;
+			}
+
+			public int getReqexp() {
+				return reqexp;
+			}
+
+			public void setReqexp(int reqexp) {
+				this.reqexp = reqexp;
+			}
+
+			public int getInstitution() {
+				return institution;
+			}
+
+			public void setInstitution(int institution) {
+				this.institution = institution;
+			}
+
+			public Date getRequestdate() {
+				return requestdate;
+			}
+
+			public void setRequestdate(Date requestdate) {
+				this.requestdate = requestdate;
+			}
+
+			public String getProjtitle() {
+				return Projtitle;
+			}
+
+			public void setProjtitle(String projtitle) {
+				Projtitle = projtitle;
+			}
+
+			public String getPropostechnologies() {
+				return Propostechnologies;
+			}
+
+			public void setPropostechnologies(String propostechnologies) {
+				Propostechnologies = propostechnologies;
+			}
+
+			public String getProposdeltimeline() {
+				return Proposdeltimeline;
+			}
+
+			public void setProposdeltimeline(String proposdeltimeline) {
+				Proposdeltimeline = proposdeltimeline;
+			}
+
 			
 
-			public RequestStatus getRequeststatus() {
+			/*public RequestStatus getRequeststatus() {
 				return requeststatus;
 			}
 
 			public void setRequeststatus(RequestStatus requeststatus) {
 				this.requeststatus = requeststatus;
-			}
+			}*/
 
-			public String getNeedassessmentreport() {
+			/*public String getNeedassessmentreport() {
 				return needassessmentreport;
 			}
 
@@ -523,8 +643,9 @@ public class RequestController {
 
 			public void setFinancialproposal(String financialproposal) {
 				this.financialproposal = financialproposal;
-			}
-	    	
+			}*/
+
+			
 	    	
 	    }
 }

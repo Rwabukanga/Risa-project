@@ -99,6 +99,45 @@ public class SystemuserController {
 		return new ResponseEntity<Object> (rb, HttpStatus.OK);
 	}
 	
+	@CrossOrigin
+	@RequestMapping(value ="/changepassword", method = RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object>resetpassword(@RequestBody Userlogin user){
+		
+		ResponseBean rs = new ResponseBean();
+		
+		if(user !=null) {
+			Map<String, Object> map = new HashMap();
+			
+			if(user.getPassword().equalsIgnoreCase(user.getConfirmPassword())) {
+				Systemuser sys = sysservice.findByUsername(user.getUsername());
+				
+				sys.setPassword(Encryption.md5(user.getPassword()));
+				if(sysservice.update(sys).equalsIgnoreCase(Msg.update)) {
+					rs.setCode(Msg.SUCCESS_CODE);
+					rs.setDescription("Password successfully changed");
+					map.put("user", map);
+					rs.setObject(map);
+					
+				}else {
+					rs.setCode(Msg.ERROR_CODE);
+					rs.setDescription("Password not  successfully changed1");
+					rs.setObject(null);
+				}
+				
+			}else {
+				rs.setCode(Msg.ERROR_CODE);
+				rs.setDescription("Password not successfully changed2");
+				rs.setObject(null);
+			}
+		}else {
+			rs.setCode(Msg.ERROR_CODE);
+			rs.setDescription("Password not successfully changed3");
+			rs.setObject(null);
+		}
+		
+		return new ResponseEntity<Object>(rs, HttpStatus.OK);
+	}
+	
 	public static class Userr {
 		
 		private String username;
@@ -121,5 +160,38 @@ public class SystemuserController {
 		
 		
 		
+	}
+	public static class Userlogin {
+	private String username;
+	private String password;
+	private String applicationName;
+	private String confirmPassword;
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getApplicationName() {
+		return applicationName;
+	}
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
+	}
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
+	
+	
+	
 	}
 }

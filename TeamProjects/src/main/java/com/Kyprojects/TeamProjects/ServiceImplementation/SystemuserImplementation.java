@@ -91,8 +91,17 @@ public class SystemuserImplementation implements SystemuserService {
 	}
 
 	public String resetPassword(Systemuser systemUser) {
-		// TODO Auto-generated method stub
-		return null;
+		String message="";
+		try{
+			systemUser.setPassword(Encryption.md5(systemUser.getPassword())); 
+			systemuserrepo.save(systemUser);
+			message=Msg.reset;
+		}catch (Exception e) {
+			e.printStackTrace();
+			message=Msg.error;
+		}
+		
+		return message;
 	}
 
 	public String blockUser(long objectId, boolean status) {

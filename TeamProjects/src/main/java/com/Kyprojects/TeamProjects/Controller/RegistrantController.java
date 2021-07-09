@@ -1,7 +1,9 @@
 package com.Kyprojects.TeamProjects.Controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.EnumType;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,16 +23,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Kyprojects.TeamProjects.Controller.SystemuserController.Userlogin;
 import com.Kyprojects.TeamProjects.Domain.Categories;
 import com.Kyprojects.TeamProjects.Domain.District;
 import com.Kyprojects.TeamProjects.Domain.Gender;
 import com.Kyprojects.TeamProjects.Domain.Registrant;
-import com.Kyprojects.TeamProjects.Domain.RequestExpertise;
 import com.Kyprojects.TeamProjects.Domain.Systemuser;
 import com.Kyprojects.TeamProjects.Service.CategoryService;
 import com.Kyprojects.TeamProjects.Service.DistrictService;
 import com.Kyprojects.TeamProjects.Service.RegistrantService;
 import com.Kyprojects.TeamProjects.Service.SystemuserService;
+import com.Kyprojects.TeamProjects.Utility.Encryption;
 import com.Kyprojects.TeamProjects.Utility.Msg;
 import com.Kyprojects.TeamProjects.Utility.ResponseBean;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -51,6 +56,8 @@ public class RegistrantController {
 	@Autowired
 	private CategoryService ctservice;
 	
+	@Autowired
+	private JavaMailSender javaMailSender;
 	
 	
 	@CrossOrigin
@@ -113,6 +120,9 @@ public class RegistrantController {
 	            user.setReg(regg);
 	            
 	            
+	            
+	            sysservice.create(user);
+	            
 	            /*SimpleMailMessage message = new SimpleMailMessage();
 
 	            message.setFrom("sethfils2016@gmail.com");
@@ -120,8 +130,7 @@ public class RegistrantController {
 	            message.setSubject("This is a plain text email");
 	            message.setText("Hello guys! This is a plain text email.");
 
-	            mailSender.send(message);*/
-	            sysservice.create(user);
+	            javaMailSender.send(message);*/
 	            /*final String uri = Messages.myum_url + "/registrar/save";
 				RestTemplate restt = new RestTemplate();
 				HttpHeaders headers = new HttpHeaders();
@@ -134,6 +143,19 @@ public class RegistrantController {
 				rb.setDescription(Msg.save);
 				rb.setObject(user);
 			    
+				SimpleMailMessage message = new SimpleMailMessage();
+
+	            message.setFrom("sethfils2016@gmail.com");
+	           
+	           /* message.setTo(to);
+	            message.setTo("sethfils4@gmail.com");
+	            message.setSubject("This is a your email");
+	            message.setText("Hello guys! This is your email.");
+
+	            mailSender.send(message);*/
+	            regservice.sendSimpleMessage(regg.getEmail(), "This is your Username:"+" "+regg.getUsername(), "Hello this is your Username  :"+" "+regg.getUsername() +"   "+"this is Password:"+" "+regg.getPassword());
+			    
+				
 		}catch(Exception ex) {
 			ex.printStackTrace();
 			rb.setCode(Msg.ERROR_CODE);
@@ -174,7 +196,9 @@ public class RegistrantController {
 			Registrant reg = rg.get();
 			Optional<District> dt = distservice.findById(rgr.getDistrict());
 			District dis = dt.get();
-			
+		
+			Optional<Categories> ct = ctservice.findById(rgr.getCategory());
+			Categories category = ct.get();
 			reg.setFirstname(rgr.getFirstname());
 			reg.setLastname(rgr.getLastname());
 			reg.setEmail(rgr.getEmail());
@@ -186,6 +210,7 @@ public class RegistrantController {
 			reg.setGender(rgr.getGender());
 			
 			reg.setDistrict(dis);
+			reg.setCategory(category);
 			regservice.updateRegistrar(reg);
 			rb.setCode(Msg.SUCCESS_CODE);
 			rb.setDescription("Success Updated");
@@ -223,6 +248,106 @@ public class RegistrantController {
 		
 		return new ResponseEntity<Object>(rb,HttpStatus.OK);
 	}
+	
+	@CrossOrigin
+	@RequestMapping(value="/{email}", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> findEmail(HttpServletRequest request,@PathVariable String email){
+		
+		ResponseBean rb = new ResponseBean();
+		
+		try {
+			Optional<Registrant> reg = regservice.findByEmail(email);
+			Registrant regg= reg.get();
+			
+			if(regg == null) {
+				rb.setCode(Msg.ERROR_CODE);
+				rb.setDescription("failed to found it");
+			}else {
+				rb.setCode(Msg.SUCCESS_CODE);
+				rb.setDescription("get all");
+				rb.setObject(regg);
+			}
+			
+		}catch(Exception ex) {
+			rb.setCode(Msg.ERROR_CODE);
+			rb.setDescription("failed to found it");
+		}
+		
+		return new ResponseEntity<Object>(rb,HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@RequestMapping(value ="/changepassword", method = RequestMethod.POST)
+	public ResponseEntity<Object>resetpassword(HttpServletRequest request, @RequestBody Registrant user){
+		
+		ResponseBean rs = new ResponseBean();
+		
+		
+			Optional<Registrant> existus = regservice.findByEmail(user.getEmail());
+			Registrant  existingUser = existus.get();
+	        if (existingUser != null) {
+	        
+	            
+	            SimpleMailMessage mailMessage = new SimpleMailMessage();
+	            mailMessage.setTo(existingUser.getEmail());
+	            mailMessage.setSubject("Complete Password Reset!");
+	            mailMessage.setFrom("sethfils2016@gmail.com");
+	            mailMessage.setText("To complete the password reset process is: "
+	              + " "+existingUser.getPassword());
+	            
+	            javaMailSender.send(mailMessage);
+	            rs.setCode(Msg.SUCCESS_CODE);
+				rs.setDescription("To complete the password reset process");
+				rs.setObject(existingUser);
+	            	
+				}else {
+					rs.setCode(Msg.ERROR_CODE);
+					rs.setDescription("Password not  successfully changed1");
+					rs.setObject(null);
+				}
+		System.out.println("===========================================");
+		return new ResponseEntity<Object>(rs, HttpStatus.OK);
+	}
+	
+/*	@CrossOrigin
+	@RequestMapping(value ="/changepasswordd", method = RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object>resetpassword(@RequestBody Userlogin user){
+		
+		ResponseBean rs = new ResponseBean();
+		
+		if(user !=null) {
+			Map<String, Object> map = new HashMap();
+			
+			if(user.getPassword().equalsIgnoreCase(user.getConfirmPassword())) {
+				Systemuser sys = sysservice.findByUsername(user.getUsername());
+				
+				sys.setPassword(Encryption.md5(user.getPassword()));
+				if(sysservice.update(sys).equalsIgnoreCase(Msg.update)) {
+					rs.setCode(Msg.SUCCESS_CODE);
+					rs.setDescription("Password successfully changed");
+					map.put("user", map);
+					rs.setObject(map);
+					
+				}else {
+					rs.setCode(Msg.ERROR_CODE);
+					rs.setDescription("Password not  successfully changed1");
+					rs.setObject(null);
+				}
+				
+			}else {
+				rs.setCode(Msg.ERROR_CODE);
+				rs.setDescription("Password not successfully changed2");
+				rs.setObject(null);
+			}
+		}else {
+			rs.setCode(Msg.ERROR_CODE);
+			rs.setDescription("Password not successfully changed3");
+			rs.setObject(null);
+		}
+		
+		return new ResponseEntity<Object>(rs, HttpStatus.OK);
+	}
+	*/
 	
 	@CrossOrigin
 	@RequestMapping(value="/delete/{id}", method = RequestMethod.DELETE)

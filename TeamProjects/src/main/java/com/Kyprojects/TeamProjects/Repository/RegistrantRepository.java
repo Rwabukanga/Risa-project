@@ -20,6 +20,6 @@ public interface RegistrantRepository extends JpaRepository<Registrant, Integer>
 	
 
 	List<Registrant> findByCategory(String category);
-	
+	Optional<Registrant> findByEmail(String emailAddress);
 	
 }

@@ -1,22 +1,29 @@
 package com.Kyprojects.TeamProjects.Controller;
 
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.Kyprojects.TeamProjects.Domain.Documents;
+import com.Kyprojects.TeamProjects.Domain.Request;
 import com.Kyprojects.TeamProjects.Service.DocumentService;
+import com.Kyprojects.TeamProjects.Service.RequestService;
 import com.Kyprojects.TeamProjects.Utility.Msg;
 import com.Kyprojects.TeamProjects.Utility.ResponseBean;
 
@@ -28,18 +35,24 @@ public class DocumentController {
 	@Autowired
 	private DocumentService docservice;
 	
+	@Autowired
+	private RequestService reqservice;
+	
 	
 	@CrossOrigin
-	@RequestMapping(value="/save", method= RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE )
-	public ResponseEntity<Object> createcategory(HttpServletRequest request, @RequestBody innerdocument ct){
+	@RequestMapping(value="/save/{id}", method= RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE )
+	public ResponseEntity<Object> createcategory(HttpServletRequest request, @RequestBody innerdocument ct, @PathVariable int id  ){
 		
 		ResponseBean rb = new ResponseBean();
 		try {
 			
+			Optional<Request> rq = reqservice.findById(id);
+			Request reque = rq.get();
 			Documents cc = new Documents();
 			
 			cc.setReqdate(ct.getReqdate());
 			cc.setName(ct.getName());
+			cc.setReq(reque);
 			
 			docservice.createdocument(cc);
 			rb.setCode(Msg.SUCCESS_CODE);
@@ -102,6 +115,45 @@ public class DocumentController {
 		
 		return new ResponseEntity<Object>(rb, HttpStatus.OK);
 	}
+	
+	  @CrossOrigin
+	    @RequestMapping(value ="/report", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+		 public ResponseEntity<InputStreamResource> quotationDetailsReportList( HttpServletRequest request) {
+		        ResponseBean responseBean = new ResponseBean();
+		        try {
+		           
+		                HttpHeaders headers = new HttpHeaders();
+		                headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		                headers.add("Pragma", "no-cache");
+		                headers.add("Expires", "0");
+		                headers.add("Content-Disposition", "inline; filename=QuotationDetails.pdf");
+		                
+		                List<Documents> list= docservice.findAll(Documents.class);
+		                
+		                
+	               ByteArrayInputStream bis = new ByteArrayInputStream(docservice.documentDetailsPDF(list));
+	               
+	 System.out.print("Print====================================");
+
+	               return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/pdf"))
+	                		.body(new InputStreamResource(bis));
+	               
+	               
+	              
+	               
+		        
+		        } catch (Exception ex) {
+		        	ex.printStackTrace();
+		            responseBean.setCode(Msg.ERROR_CODE);
+		            responseBean.setDescription(Msg.error);
+		            responseBean.setObject(null);
+		        }
+		        return new ResponseEntity<InputStreamResource>(HttpStatus.OK);
+		        
+		    }
+		    
+	
+	
 	
 	
 public static class innerdocument{

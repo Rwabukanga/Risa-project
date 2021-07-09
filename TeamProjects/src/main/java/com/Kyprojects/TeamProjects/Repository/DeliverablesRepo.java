@@ -5,13 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.Kyprojects.TeamProjects.Domain.Documents;
-
-
+import com.Kyprojects.TeamProjects.Domain.Deliverables;
 
 @Repository
-public interface Documentsrepo extends JpaRepository<Documents, Integer> {
+public interface DeliverablesRepo extends JpaRepository<Deliverables, Integer> {
 
-	Optional<Documents> findById(int id);
-	
+	Optional<Deliverables> findById(int id);
 }

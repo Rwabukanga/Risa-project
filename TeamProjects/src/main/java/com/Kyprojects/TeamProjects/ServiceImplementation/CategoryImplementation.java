@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.Kyprojects.TeamProjects.Domain.Categories;
-import com.Kyprojects.TeamProjects.Domain.Category;
 import com.Kyprojects.TeamProjects.Repository.CategoryRepository;
 import com.Kyprojects.TeamProjects.Service.CategoryService;
 

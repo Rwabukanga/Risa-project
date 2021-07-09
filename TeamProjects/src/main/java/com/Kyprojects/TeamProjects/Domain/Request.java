@@ -20,38 +20,43 @@ public class Request {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 	private String uuid = UUID.randomUUID().toString();
-	/*@JsonFormat(pattern="yyyy-MM-dd")
-	private Date requestdate;*/
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private Date requestdate;
 	private String Projtitle;
 	private String Projectdecription;
 	private String Propostechnologies;
 	private String Proposdeltimeline;
 	private String Proposedfinancialbudget;
-	private String Deliverables;
+	/*private String Deliverables;*/
 	private String Comment;
-	private String file;
+	/*private String file;
 	private String needassessmentreport;
 	private String financialproposal;
 	private String technicalproposal;
 	private String purchaseorder;
 	private String invoice;
-	private String termsofreference;
+	private String termsofreference;*/
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
-	private String requestdate;
+	
 	
 	
 	/*@Enumerated(EnumType.STRING)
 	private RequestExpertise requestexp;*/
 	
-	@Enumerated(EnumType.STRING)
-	private RequestStatus requeststatus;
+	/*@Enumerated(EnumType.STRING)
+	private RequestStatus requeststatus;*/
 	
 	@ManyToOne
 	private Institution institution;
 	
 	@ManyToOne
 	private Requestexpertis reqexp;
+	
+	@ManyToOne
+	private Requeststatuss reqst;
+	
+	@ManyToOne
+	private Deliverables del;
    	
 	public int getId() {
 		return id;
@@ -69,14 +74,14 @@ public class Request {
 		this.uuid = uuid;
 	}
 
-	public RequestStatus getRequeststatus() {
+	/*public RequestStatus getRequeststatus() {
 		return requeststatus;
 	}
 
 	public void setRequeststatus(RequestStatus requeststatus) {
 		this.requeststatus = requeststatus;
 	}
-
+*/
 	
 	public String getProjectdecription() {
 		return Projectdecription;
@@ -93,13 +98,13 @@ public class Request {
 		Proposedfinancialbudget = proposedfinancialbudget;
 	}
 
-	public String getDeliverables() {
+	/*public String getDeliverables() {
 		return Deliverables;
 	}
-
-	public void setDeliverables(String deliverables) {
+*/
+/*	public void setDeliverables(String deliverables) {
 		Deliverables = deliverables;
-	}
+	}*/
 
 
 
@@ -110,7 +115,7 @@ public class Request {
 	public void setComment(String comment) {
 		Comment = comment;
 	}
-
+/*
 	public String getFile() {
 		return file;
 	}
@@ -167,7 +172,7 @@ public class Request {
 	public void setTermsofreference(String termsofreference) {
 		this.termsofreference = termsofreference;
 	}
-
+*/
 	public String getProjtitle() {
 		return Projtitle;
 	}
@@ -200,20 +205,36 @@ public class Request {
 		this.institution = institution;
 	}
 
-	public String getRequestdate() {
-		return requestdate;
-	}
-
-	public void setRequestdate(String requestdate) {
-		this.requestdate = requestdate;
-	}
-
 	public Requestexpertis getReqexp() {
 		return reqexp;
 	}
 
 	public void setReqexp(Requestexpertis reqexp) {
 		this.reqexp = reqexp;
+	}
+
+	public Requeststatuss getReqst() {
+		return reqst;
+	}
+
+	public void setReqst(Requeststatuss reqst) {
+		this.reqst = reqst;
+	}
+
+	public Deliverables getDel() {
+		return del;
+	}
+
+	public void setDel(Deliverables del) {
+		this.del = del;
+	}
+
+	public Date getRequestdate() {
+		return requestdate;
+	}
+
+	public void setRequestdate(Date requestdate) {
+		this.requestdate = requestdate;
 	}
 
 	

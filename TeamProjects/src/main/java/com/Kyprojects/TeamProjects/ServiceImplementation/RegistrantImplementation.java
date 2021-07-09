@@ -1,13 +1,13 @@
 package com.Kyprojects.TeamProjects.ServiceImplementation;
 
 import java.util.List;
-import java.util.Locale.Category;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.Kyprojects.TeamProjects.Domain.Categories;
 import com.Kyprojects.TeamProjects.Domain.Registrant;
 import com.Kyprojects.TeamProjects.Repository.RegistrantRepository;
 import com.Kyprojects.TeamProjects.Service.RegistrantService;
@@ -20,6 +20,8 @@ public class RegistrantImplementation implements RegistrantService {
 	@Autowired
 	private RegistrantRepository regrepo;
 	
+	@Autowired
+	private JavaMailSender mailSender;
 	
 	
 	public Registrant createregistrar(Registrant registrar) {
@@ -70,6 +72,27 @@ public class RegistrantImplementation implements RegistrantService {
 		// TODO Auto-generated method stub
 		return regrepo.findByCategory(category);
 	}
+
+	public void sendSimpleMessage(String to, String subject, String text) {
+		 
+		    SimpleMailMessage message = new SimpleMailMessage(); 
+	        message.setFrom("sethfils2016@gmail.com");
+	        message.setTo(to); 
+	        message.setSubject(subject); 
+	        message.setText(text);
+	        mailSender.send(message);
+	}
+
+	public Optional<Registrant> findByEmail(String emailAddress) {
+		// TODO Auto-generated method stub
+		return regrepo.findByEmail(emailAddress);
+	}
+
+	
+	
+	
+
+	
 
 	
 

@@ -249,15 +249,15 @@ public class RequestImplementation implements RequestService  {
 		        table.addCell(praCell(new Paragraph("Project Delivery TimeLine",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
 		        table.addCell(praCell(new Paragraph(app.getProposdeltimeline()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
 		        table.addCell(praCell(new Paragraph("Deliverables",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
-		        table.addCell(praCell(new Paragraph(app.getDeliverables()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
+		        table.addCell(praCell(new Paragraph(app.getDel()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
 		        table.addCell(praCell(new Paragraph("Comment",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
 		        table.addCell(praCell(new Paragraph(app.getComment()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
 		        table.addCell(praCell(new Paragraph("Request Status",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
-		        table.addCell(praCell(new Paragraph(app.getRequeststatus()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
-		        /*table.addCell(praCell(new Paragraph("Request Expertise",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
-		        table.addCell(praCell(new Paragraph(app.getRequestexp()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));*/
-		        table.addCell(praCell(new Paragraph("Invoice",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
-		        table.addCell(praCell(new Paragraph(app.getInvoice()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
+		        table.addCell(praCell(new Paragraph(app.getReqst()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
+		        table.addCell(praCell(new Paragraph("Request Expertise",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
+		        table.addCell(praCell(new Paragraph(app.getReqexp()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
+		       /* table.addCell(praCell(new Paragraph("Invoice",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
+		        table.addCell(praCell(new Paragraph(app.getInvoice()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));*/
 		        table.addCell(praCell(new Paragraph("Institution",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
 		        table.addCell(praCell(new Paragraph(app.getInstitution().getName()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
 		        table.addCell(praCell(new Paragraph("Request Date",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
@@ -348,15 +348,15 @@ public class RequestImplementation implements RequestService  {
 		  
 		  
 		  // create 4 column table
-		  PdfPTable table = new PdfPTable(8);
-		  PdfPTable table1=new PdfPTable(8);
+		  PdfPTable table = new PdfPTable(9);
+		  PdfPTable table1=new PdfPTable(9);
 
 		  // set the width of the table to 100% of page
 		  table.setWidthPercentage(200);
 		  /*table1.setWidthPercentage(200);*/
 		  // set relative columns width
-		  table.setWidths(new int[] { 5, 5,5, 5,5,5,5,5});
-		  table1.setWidths(new int[] { 5, 5,5, 5,5,5,5,5});
+		  table.setWidths(new int[] { 8, 8,8, 8,8,8,8,8,8});
+		  table1.setWidths(new int[] { 8, 8,8, 8,8,8,8,8,8});
 		  table1.completeRow();
           
 
@@ -424,6 +424,7 @@ public class RequestImplementation implements RequestService  {
 		  table1.addCell(praCell(new Paragraph("Proposed Technologies",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
 		  table1.addCell(praCell(new Paragraph("Deliverables",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
 		  table1.addCell(praCell(new Paragraph("Comment",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
+		  table1.addCell(praCell(new Paragraph("RequestExpertise",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
 		  table1.addCell(praCell(new Paragraph("RequestStatus",new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK)))).setBorderColor(BaseColor.BLACK);
 		  
 		 
@@ -438,9 +439,11 @@ public class RequestImplementation implements RequestService  {
 		    	 table1.addCell(praCell(new Paragraph(ha.getProposdeltimeline()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
 		    	 table1.addCell(praCell(new Paragraph(ha.getProposedfinancialbudget()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
 		    	 table1.addCell(praCell(new Paragraph(ha.getPropostechnologies()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
-		    	 table1.addCell(praCell(new Paragraph(ha.getDeliverables()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
+		    	 table1.addCell(praCell(new Paragraph(ha.getDel().getName()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
 		    	 table1.addCell(praCell(new Paragraph(ha.getComment()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
-		    	 table1.addCell(praCell(new Paragraph(ha.getRequeststatus()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
+		    	 table1.addCell(praCell(new Paragraph(ha.getReqexp().getName()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
+		    	 table1.addCell(praCell(new Paragraph(ha.getReqst().getName()+"",new Font(FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK))));
+		    	
 		    	 /*table1.addCell(createValueCell(" "+ha.getBatchHarvest().getRegistrantProduct().getSeason().getName()));
 			    table1.addCell(createValueCell(" "+ha.getWeight()));*/
 			    }
