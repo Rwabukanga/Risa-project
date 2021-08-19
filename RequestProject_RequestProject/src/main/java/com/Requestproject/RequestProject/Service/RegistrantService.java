@@ -1,15 +1,13 @@
-package com.Kyprojects.TeamProjects.Service;
+package com.Requestproject.RequestProject.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
-import com.Kyprojects.TeamProjects.Domain.Categories;
+import com.Requestproject.RequestProject.Domain.Registrant;
 
-import com.Kyprojects.TeamProjects.Domain.Registrant;
+
 
 @Service
 public interface RegistrantService {

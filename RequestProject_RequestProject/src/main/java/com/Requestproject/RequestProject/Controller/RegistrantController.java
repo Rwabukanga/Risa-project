@@ -1,9 +1,7 @@
-package com.Kyprojects.TeamProjects.Controller;
+package com.Requestproject.RequestProject.Controller;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.EnumType;
@@ -23,19 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Kyprojects.TeamProjects.Controller.SystemuserController.Userlogin;
-import com.Kyprojects.TeamProjects.Domain.Categories;
-import com.Kyprojects.TeamProjects.Domain.District;
-import com.Kyprojects.TeamProjects.Domain.Gender;
-import com.Kyprojects.TeamProjects.Domain.Registrant;
-import com.Kyprojects.TeamProjects.Domain.Systemuser;
-import com.Kyprojects.TeamProjects.Service.CategoryService;
-import com.Kyprojects.TeamProjects.Service.DistrictService;
-import com.Kyprojects.TeamProjects.Service.RegistrantService;
-import com.Kyprojects.TeamProjects.Service.SystemuserService;
-import com.Kyprojects.TeamProjects.Utility.Encryption;
-import com.Kyprojects.TeamProjects.Utility.Msg;
-import com.Kyprojects.TeamProjects.Utility.ResponseBean;
+import com.Requestproject.RequestProject.Domain.Categories;
+import com.Requestproject.RequestProject.Domain.District;
+import com.Requestproject.RequestProject.Domain.Gender;
+import com.Requestproject.RequestProject.Domain.Registrant;
+import com.Requestproject.RequestProject.Domain.Systemuser;
+import com.Requestproject.RequestProject.Service.CategoryService;
+import com.Requestproject.RequestProject.Service.DistrictService;
+import com.Requestproject.RequestProject.Service.RegistrantService;
+import com.Requestproject.RequestProject.Service.SystemuserService;
+import com.Requestproject.RequestProject.Utility.Msg;
+import com.Requestproject.RequestProject.Utility.ResponseBean;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 
@@ -177,6 +173,21 @@ public class RegistrantController {
 			rb.setCode(Msg.SUCCESS_CODE);
 			rb.setDescription("get all");
 			rb.setObject(list);
+			
+		}catch(Exception ex) {
+			rb.setCode(Msg.ERROR_CODE);
+			rb.setDescription("failed to retrieve it");
+		}
+		
+		return new ResponseEntity<Object>(rb, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value= "/data")
+	public ResponseEntity<Object> data(){
+		
+		ResponseBean rb = new ResponseBean();
+		try {
+			System.out.println("Hello World");
 			
 		}catch(Exception ex) {
 			rb.setCode(Msg.ERROR_CODE);

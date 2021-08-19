@@ -1,4 +1,4 @@
-package com.Kyprojects.TeamProjects.Domain;
+package com.Requestproject.RequestProject.Domain;
 
 public enum Category {
 

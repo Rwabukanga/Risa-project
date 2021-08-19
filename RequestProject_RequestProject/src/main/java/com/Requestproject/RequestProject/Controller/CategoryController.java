@@ -1,4 +1,4 @@
-package com.Kyprojects.TeamProjects.Controller;
+package com.Requestproject.RequestProject.Controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,15 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.Kyprojects.TeamProjects.Controller.RegistrantController.innerRegistrar;
-import com.Kyprojects.TeamProjects.Domain.Categories;
+import com.Requestproject.RequestProject.Domain.Categories;
+import com.Requestproject.RequestProject.Service.CategoryService;
+import com.Requestproject.RequestProject.Service.RegistrantService;
+import com.Requestproject.RequestProject.Utility.Msg;
+import com.Requestproject.RequestProject.Utility.ResponseBean;
 
-import com.Kyprojects.TeamProjects.Domain.District;
-import com.Kyprojects.TeamProjects.Domain.Registrant;
-import com.Kyprojects.TeamProjects.Service.CategoryService;
-import com.Kyprojects.TeamProjects.Service.RegistrantService;
-import com.Kyprojects.TeamProjects.Utility.Msg;
-import com.Kyprojects.TeamProjects.Utility.ResponseBean;
 
 @Controller
 @RequestMapping(value="/category")
